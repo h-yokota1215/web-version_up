@@ -1,0 +1,48 @@
+@startuml ver2_requirements
+title juchu01 ver.2 要求図
+
+skinparam requirementBorderColor #1F4E78
+skinparam requirementBackgroundColor #EAF2F8
+skinparam noteBackgroundColor #FFF2CC
+
+package "ver.2 商品カテゴリ拡張" {
+  requirement "V2-R01\n食品・AV機器・PCを追加" as R01
+  requirement "V2-R02\n商品一覧に共通項目を表示" as R02
+  requirement "V2-R03\n商品詳細に共通項目・固有項目を表示" as R03
+  requirement "V2-R04\nサンプルデータでテスト可能" as R04
+}
+
+package "利用者価値" {
+  requirement "顧客が取扱商品の検索範囲を広げられる" as Value1
+  requirement "カテゴリに応じた商品情報を確認できる" as Value2
+}
+
+package "制約・品質要求" {
+  requirement "既存の文具・書籍機能を維持する" as Q01
+  requirement "営業所別在庫を正しく表示する" as Q02
+  requirement "新商品を既存受注処理で扱える" as Q03
+}
+
+R01 --> Value1 : 実現
+R02 --> Value2 : 実現
+R03 --> Value2 : 実現
+R01 --> Q02 : 影響
+R01 --> Q03 : 影響
+R02 --> Q01 : 回帰
+R03 --> Q01 : 回帰
+R04 --> Q01 : 確認
+
+note right of R01
+  商品コード先頭2桁:
+  03=食品、04=AV機器、05=PC
+end note
+
+note right of R03
+  共通項目:
+  商品コード、商品名、単価、メーカー、在庫
+
+  固有項目:
+  食品、AV機器、PCごとに異なる
+end note
+
+@enduml

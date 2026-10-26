@@ -1,0 +1,243 @@
+' juchu01 現行システムUML
+
+@startuml architecture
+title juchu01 システム構成図
+
+actor 顧客 as User
+
+rectangle "Webブラウザ" as Browser
+
+package "Webアプリケーション" {
+  component "CosServlet\n(Servlet)" as Servlet
+  component "CosControl\n(振り分け)" as CosControl
+  component "NinshouControl" as Auth
+  component "KokyakuControl" as Customer
+  component "JuchuControl" as Order
+  component "ShohinControl" as Product
+  component "DaoControl" as DaoControl
+  component "商品・顧客・受注DAO" as Dao
+  component "JSP / HTML" as View
+}
+
+database "H2\ncoscommon01" as DB
+
+User --> Browser
+Browser --> Servlet : POST /CosServlet
+Servlet --> CosControl
+CosControl --> Auth
+CosControl --> Customer
+CosControl --> Order
+Order --> Product
+Auth --> DaoControl
+Customer --> DaoControl
+Order --> DaoControl
+Product --> DaoControl
+DaoControl --> Dao
+Dao --> DB
+Auth --> View
+Customer --> View
+Order --> View
+
+@enduml
+
+@startuml class_model
+title juchu01 主要クラス図
+
+abstract class BaseControl {
+  - dao : DaoControl
+  - command : String
+  - session : HttpSession
+  + entry(request, response)
+  + setDao(dao)
+  + setCommand(command)
+}
+
+class CosServlet {
+  - cos : CosControl
+  + init()
+  + doPost(request, response)
+  + doDelete(request, response)
+}
+
+class CosControl {
+  - dao : DaoControl
+  + action(request, response)
+  + close()
+}
+
+class NinshouControl {
+  + logon(kokyakuCD, password)
+  + logonErr(response)
+  + logoff(response, session)
+}
+
+class KokyakuControl {
+  - data : Kokyaku
+  + entry(request, response)
+}
+
+class JuchuControl {
+  - data : Juchu
+  - shohinList : ArrayList<Shohin>
+  + entry(request, response)
+  - addCart(request)
+  - updateCart(request)
+}
+
+class ShohinControl {
+  + getShohinCateList()
+  + getShohinList(code, eigyoshoCD)
+}
+
+class DaoControl {
+  + selectKokyaku()
+  + selectShohinCategory()
+  + selectShohin()
+  + insertJuchu()
+  + connectionClose()
+}
+
+abstract class DaoKokyaku
+class DaoHoujin
+class DaoShohin
+class DaoBungu
+class DaoBook
+class DaoJuchu
+
+class Kokyaku
+class Houjin
+class Juchu
+class Meisai
+class Shohin
+class ShohinPrimalData
+class ShohinCategory
+class Bungu
+class Book
+
+CosServlet --> CosControl
+CosControl --> NinshouControl
+CosControl --> KokyakuControl
+CosControl --> JuchuControl
+BaseControl <|-- NinshouControl
+BaseControl <|-- KokyakuControl
+BaseControl <|-- JuchuControl
+JuchuControl --> ShohinControl
+BaseControl --> DaoControl
+DaoControl --> DaoKokyaku
+DaoControl --> DaoShohin
+DaoControl --> DaoJuchu
+DaoKokyaku <|-- DaoHoujin
+DaoShohin <|-- DaoBungu
+DaoShohin <|-- DaoBook
+Kokyaku <|-- Houjin
+Juchu o-- Meisai
+Meisai --> ShohinPrimalData
+Shohin --> ShohinPrimalData
+Shohin --> ShohinCategory
+
+@enduml
+
+@startuml login_sequence
+title ログイン処理シーケンス
+
+actor 顧客 as User
+participant "cosd1000.html" as Top
+participant CosServlet
+participant CosControl
+participant NinshouControl
+participant DaoKokyaku
+database H2
+participant "cosd1010.jsp" as ProductPage
+
+User -> Top : 顧客コード・パスワード入力
+User -> Top : ログオン押下
+Top -> CosServlet : POST order,userId,password
+CosServlet -> CosControl : action(request,response)
+CosControl -> NinshouControl : logon(userId,password)
+NinshouControl -> DaoKokyaku : 認証情報検索
+DaoKokyaku -> H2 : KOKYAKUPASS_TABLE検索
+H2 --> DaoKokyaku : 認証結果
+DaoKokyaku --> NinshouControl : 顧客情報またはnull
+
+alt 認証成功
+  CosControl -> CosControl : JuchuControl生成
+  CosControl -> ProductPage : forward
+  ProductPage --> User : 商品検索画面表示
+else 認証失敗
+  CosControl -> CosControl : エラー画面を選択
+  CosControl --> User : ログインエラー画面表示
+end
+
+@enduml
+
+@startuml order_sequence
+title 受注確定処理シーケンス
+
+actor 顧客 as User
+participant "cosd1070.jsp" as Confirm
+participant CosServlet
+participant CosControl
+participant JuchuControl
+participant DaoJuchu
+database H2
+participant "cosd1080.jsp" as Complete
+
+User -> Confirm : 注文を確定する
+Confirm -> CosServlet : POST order
+CosServlet -> CosControl : action(request,response)
+CosControl -> JuchuControl : entry(request,response)
+JuchuControl -> DaoJuchu : insertData(juchu)
+DaoJuchu -> H2 : 売掛残高更新
+DaoJuchu -> H2 : 受注番号更新
+DaoJuchu -> H2 : JUCHU_TABLE INSERT
+DaoJuchu -> H2 : 在庫引当数 UPDATE
+DaoJuchu -> H2 : JUCHUMEISAI_TABLE INSERT
+
+alt 正常終了
+  DaoJuchu --> JuchuControl : 受注データ・成功
+  JuchuControl -> Complete : forward
+  Complete --> User : 注文完了表示
+else SQLエラーまたは在庫・与信エラー
+  DaoJuchu --> JuchuControl : エラーフラグ
+  JuchuControl --> User : 対応するエラー画面表示
+end
+
+@enduml
+
+@startuml screen_transition
+title juchu01 画面遷移図
+
+[*] --> Top : 開始
+Top : cosd1000.html
+Top --> LoginError : ログイン失敗
+Top --> ProductSearch : ログイン成功
+Top --> CustomerInput : 新規登録
+CustomerInput : cosd1090.jsp
+CustomerInput --> CustomerConfirm : 次へ
+CustomerConfirm : cosd1100.jsp
+CustomerConfirm --> CustomerComplete : ユーザー登録
+CustomerComplete : cosd1110.jsp
+ProductSearch : cosd1010.jsp
+ProductSearch --> ProductList : 検索
+ProductList : cosd1020.jsp
+ProductList --> ProductDetail : 詳細
+ProductDetail : cosd1040.jsp / cosd1041.jsp
+ProductList --> Cart : カート内リスト
+ProductDetail --> ProductList : 戻る
+Cart : cosd1030.jsp
+Cart --> ProductSearch : ご購入を続ける
+Cart --> OrderConfirm : ご注文手続きへ
+OrderConfirm : cosd1050.jsp
+OrderConfirm --> Payment : お支払い・お届け先入力
+Payment : cosd1060.jsp
+Payment --> FinalConfirm : 次へ
+FinalConfirm : cosd1070.jsp
+FinalConfirm --> Complete : ご注文を確定する
+Complete : cosd1080.jsp
+Cart --> StockError : 在庫エラー
+FinalConfirm --> CreditError : 与信エラー
+LoginError : cosd150E.jsp
+StockError : cosd151E.jsp
+CreditError : cosd152E.jsp
+
+@enduml
