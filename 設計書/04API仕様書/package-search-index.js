@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"cos","h":"","u":""},{"l":"cosDAO","h":"","u":""},{"l":"cosDataPack","h":"","u":""},{"l":"すべてのパッケージ","h":"","u":"allpackages-index.html"}]
