@@ -1,0 +1,166 @@
+@startuml ver2_class
+title juchu01 ver.2 クラス図
+
+allowmixing
+skinparam classAttributeIconSize 0
+
+package "Control" {
+  class JuchuControl #90EE90 {
+    - data : Juchu
+    - shohinList : ArrayList<Shohin>
+    + searchProduct(code, eigyoshoCD)
+    + showProductDetail(goodsCD, eigyoshoCD)
+    + addCart(request)
+  }
+
+  class ShohinControl #90EE90 {
+    + getShohinCateList() : ArrayList<ShohinCategory>
+    + getShohinList(code, eigyoshoCD) : ArrayList<Shohin>
+  }
+}
+
+package "DAO" {
+  class DaoControl #90EE90 {
+    + selectShohinCategory() : ArrayList<ShohinCategory>
+    + selectShohin(code, eigyoshoCD) : ArrayList<Shohin>
+  }
+
+  class DaoShohin #90EE90 {
+    + selectData() : ArrayList<ShohinCategory>
+    + selectData(subCtgCD, eigyoshoCD) : ArrayList<Shohin>
+    - getClassName(ctgCD) : String
+  }
+
+  class DaoFoods #FFA500 {
+    + selectData(goodsCD, eigyoshoCD) : ArrayList<Shohin>
+  }
+  class DaoAv #FFA500 {
+    + selectData(goodsCD, eigyoshoCD) : ArrayList<Shohin>
+  }
+  class DaoPc #FFA500 {
+    + selectData(goodsCD, eigyoshoCD) : ArrayList<Shohin>
+  }
+
+  DaoFoods --|> DaoShohin
+  DaoAv --|> DaoShohin
+  DaoPc --|> DaoShohin
+}
+
+package "DataPack" {
+  class Shohin {
+    - shohinPriData : ShohinPrimalData
+    - shohinCtgInfo : ShohinCategory
+    - makerCD : String
+    - makerName : String
+    - imgURL : String
+    - zaikoCnt : int
+    - hikiateCnt : int
+    + setZaikoHyouji()
+  }
+
+  class Foods #FFA500 {
+    - taste : String
+    - content : String
+    - country : String
+    - calorie : String
+    - ingredient : String
+    - nutrients : String
+  }
+
+  class Av #FFA500 {
+    - color : String
+    - kataban : String
+    - screenSize : String
+    - screenResolution : String
+    - outputVolume : String
+    - capacity : String
+    - media : String
+    - interfaceInfo : String
+    - powerConsumption : String
+    - accessories : String
+    - warranty : String
+    - weight : String
+    - size : String
+  }
+
+  class Pc #FFA500 {
+    - color : String
+    - kataban : String
+    - screenSize : String
+    - screenResolution : String
+    - cpu : String
+    - memory : String
+    - hdd : String
+    - drive : String
+    - network : String
+    - os : String
+    - software : String
+    - battery : String
+    - accessories : String
+    - warranty : String
+    - weight : String
+    - size : String
+  }
+
+  class ShohinCategory {
+    - gctgCD : String
+    - gsubctgCD : String
+    - gctgName : String
+    - gsubctgName : String
+    - className : String
+  }
+
+  class ShohinPrimalData {
+    - goodsCD : String
+    - goodsName : String
+    - htanka : int
+  }
+
+  Foods --|> Shohin
+  Av --|> Shohin
+  Pc --|> Shohin
+  Shohin *-- ShohinCategory
+  Shohin *-- ShohinPrimalData
+}
+
+package "View" {
+  component "cosd1020.jsp\n商品一覧" as ProductList
+  component "cosd1040.jsp\n文具詳細" as BunguDetail
+  component "cosd1041.jsp\n書籍詳細" as BookDetail
+  component "cosd1042.jsp\n食品詳細" as FoodsDetail #FFA500
+  component "cosd1043.jsp\nAV機器詳細" as AvDetail #FFA500
+  component "cosd1044.jsp\nPC詳細" as PcDetail #FFA500
+}
+
+JuchuControl --> ShohinControl
+ShohinControl --> DaoControl
+DaoControl --> DaoShohin
+DaoControl --> DaoFoods : 商品コード03
+DaoControl --> DaoAv : 商品コード04
+DaoControl --> DaoPc : 商品コード05
+JuchuControl --> ProductList
+JuchuControl --> BunguDetail
+JuchuControl --> BookDetail
+JuchuControl --> FoodsDetail
+JuchuControl --> AvDetail
+JuchuControl --> PcDetail
+DaoShohin ..> ShohinCategory
+DaoFoods ..> Foods
+DaoAv ..> Av
+DaoPc ..> Pc
+
+database "H2 COSCOMMON02\n(juchu02)" as DB
+DaoShohin --> DB
+DaoFoods --> DB
+DaoAv --> DB
+DaoPc --> DB
+
+note right of DaoControl
+  01=Bungu
+  02=Book
+  03=Foods
+  04=Av
+  05=Pc
+end note
+
+@enduml

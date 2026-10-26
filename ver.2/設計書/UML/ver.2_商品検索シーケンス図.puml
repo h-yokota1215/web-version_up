@@ -1,0 +1,43 @@
+@startuml ver2_product_search_sequence
+title juchu01 ver.2 商品検索・詳細表示シーケンス
+
+actor 顧客 as Customer
+boundary "商品一覧JSP" as ListView
+boundary "カテゴリ別商品詳細JSP\ncosd1040～cosd1044" as DetailView
+control JuchuControl
+control ShohinControl
+control DaoControl
+control DaoShohin
+control "カテゴリ別DAO\nDaoFoods / DaoAv / DaoPc" as CategoryDao
+database "H2 COSCOMMON02\n(juchu02)" as DB
+
+Customer -> ListView : カテゴリ選択・検索
+ListView -> JuchuControl : category=0301等
+JuchuControl -> ShohinControl : getShohinList(category,営業所)
+ShohinControl -> DaoControl : selectShohin(category,営業所)
+DaoControl -> DaoShohin : サブカテゴリ検索
+DaoShohin -> DB : 共通項目・在庫を検索
+DB --> DaoShohin : 商品一覧
+DaoShohin --> DaoControl
+DaoControl --> ShohinControl
+ShohinControl --> JuchuControl
+JuchuControl --> ListView : 共通項目・在庫表示
+
+Customer -> ListView : 詳細ボタン
+ListView -> JuchuControl : 商品コード
+JuchuControl -> ShohinControl : getShohinList(商品コード,営業所)
+ShohinControl -> DaoControl : 商品コード先頭2桁で振り分け
+DaoControl -> CategoryDao : 03/04/05の詳細検索
+CategoryDao -> DB : 共通項目・固有項目・在庫を検索
+DB --> CategoryDao : 商品詳細
+CategoryDao --> DaoControl
+DaoControl --> ShohinControl
+ShohinControl --> JuchuControl
+JuchuControl -> DetailView : 商品コード先頭2桁で画面選択
+DetailView --> Customer : 共通項目・固有項目・画像表示
+
+note over DaoControl, CategoryDao
+  03=Foods、04=Av、05=Pc
+end note
+
+@enduml
