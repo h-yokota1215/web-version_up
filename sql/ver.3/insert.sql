@@ -1150,6 +1150,248 @@ INSERT INTO CTR_CURCODE_TABLE VALUES('JUCHU_TABLE', 'JUCHUCD', '1202000008');
 INSERT INTO CTR_CURCODE_TABLE VALUES('NOUHIN_DATA', 'NOUHINSYOBAN', '1202000001');
 INSERT INTO CTR_CURCODE_TABLE VALUES('ERR_JUCHU_TABLE', 'JUCHUERRCD', '0000000001');
 
--- ***** ここから ver.3（COSCOMMON03）: ver.2 SQLをコピーして作成。初期データを管理する *****
--- ***** 作業内容: ver.3の個人顧客・受注対応の初期データを反映する *****
--- ***** ここまで ver.3 の範囲は、実装時に対象SQLの変更箇所へ付ける *****
+-- ***** ここから ver.2（COSCOMMON02）: ver.1 SQLをコピーして作成。初期データを管理する *****
+-- ***** 作業内容: ver.2の商品カテゴリ・商品・在庫の初期データを反映する *****
+-- ***** ここまで ver.2 の範囲は、実装時に対象SQLの変更箇所へ付ける *****
+
+-- ***** ここから ver.2: 新カテゴリの初期データを追加 *****
+-- 作業内容: カテゴリ・サブカテゴリ・商品・営業所別在庫を登録する
+INSERT INTO CTR_GCTG_TABLE VALUES('03', '食品', 'Foods');
+INSERT INTO CTR_GCTG_TABLE VALUES('04', 'AV機器', 'Av');
+INSERT INTO CTR_GCTG_TABLE VALUES('05', 'PC', 'Pc');
+
+INSERT INTO GSUBCTG_TABLE VALUES('0301', '食品');
+INSERT INTO GSUBCTG_TABLE VALUES('0302', '飲料');
+INSERT INTO GSUBCTG_TABLE VALUES('0303', '健康食品／サプリメント');
+INSERT INTO GSUBCTG_TABLE VALUES('0401', 'テレビ');
+INSERT INTO GSUBCTG_TABLE VALUES('0402', 'ビデオレコーダー');
+INSERT INTO GSUBCTG_TABLE VALUES('0403', 'プロジェクタ');
+INSERT INTO GSUBCTG_TABLE VALUES('0404', 'オーディオプレイヤー／コンポ');
+INSERT INTO GSUBCTG_TABLE VALUES('0405', 'その他OA機器');
+INSERT INTO GSUBCTG_TABLE VALUES('0501', 'PC');
+
+INSERT INTO FOODS_TABLE VALUES('0303-00701-111', 'カロリー＋（プラス）　ブロック　健康食品　バナナ味', 1, '個', 300, '007', '不足したカロリーを手軽に補充！', 'img/foods/0303-00701-111.jpg', '健康食品', 'バナナ味', '200g', '日本国', '140kcal', '原材料１', '栄養成分１', 'なし');
+INSERT INTO FOODS_TABLE VALUES('0303-00701-112', 'カロリー＋（プラス）　ブロック　健康食品　フルーツミックス', 1, '個', 300, '007', '不足したカロリーを手軽に補充！', 'img/foods/0303-00701-112.jpg', '健康食品', 'フルーツミックス', '200g', '日本国', '140kcal', '原材料１', '栄養成分１', 'なし');
+INSERT INTO FOODS_TABLE VALUES('0301-00813-322', 'インスタントヌードル　６食入', 6, '袋', 400, '008', 'お腹がすいた時に', 'img/foods/0301-00813-322.jpg', '食品', '―', '400g', '日本国', '500kcal', 'イソフラボン、…', 'なし', '賞味期限：2年');
+INSERT INTO FOODS_TABLE VALUES('0302-00816-100', '玄米茶　1.5リットル　６本入', 6, '個', 600, '008', '1.5リットルペットボトルが6本入りでお得な価格', 'img/foods/0302-00816-100.jpg', '飲料', 'お茶', '1.5l', '日本国', '129kcal', 'カテキン', 'なし', 'なし');
+
+INSERT INTO AV_TABLE VALUES('0401-00574-222', '液晶テレビ「ReGaPa（レガパ）」　テレビ　赤', 1, '台', 100000, '005', '薄さと色合いを追及した、レガパシリーズの最新', 'img/av/0401-00574-222.jpg', 'テレビ', '赤', 'TH-L32C3', '32V型', '1366×768', '20W', '32GB', 'SD/SDHC/SDXC', 'HDMI端子：1、LAN端子：1', '53W', 'リモコン', '1年間', '約10.0kg', '幅779×', '機能／明るさセンサー');
+INSERT INTO AV_TABLE VALUES('0404-00517-890', 'CD／MD／カセットプレイヤー　オーディオプレイヤー　シルバー', 1, '台', 32000, '005', 'CDの他にMDやカセットも再生可能。', 'img/av/0404-00517-890.jpg', 'オーディオプレイヤー', 'シルバー', 'TH-L32C3', '―', '―', '24W', '―', 'CD/MD/カセット', '―', '24W', 'リモコン', '5年間', '4kg', '幅529×', '―');
+INSERT INTO AV_TABLE VALUES('0401-00642-012', '液晶テレビ「BAVIRA（バビラ）」　テレビ　黒', 1, '台', 80000, '006', '人気のバビラシリーズに、24型が登場', 'img/av/0401-00642-012.jpg', 'テレビ', '黒', 'SMY-RQ24-44B', '24V型', '1366×768', '20W', '32GB', 'SD/SDHC/SDXC', 'HDMI端子：1、LAN端子：1', '53W', 'リモコン', '1年間', '約10.0kg', '幅779×', '機能／明るさセンサー');
+INSERT INTO AV_TABLE VALUES('0402-00601-112', 'BDレコーダー　ビデオレコーダ', 1, '台', 60000, '006', '大容量のHDDを内蔵', 'img/av/0402-00601-112.jpg', 'ビデオレコーダ', '―', 'SMY-BD22-74', '―', '―', '―', '260GB', '―', 'D端子：1、LAN端子：1', '47W', 'リモコン', '3年間', '5.1kg', '幅529×', 'ブランクのBD１枚入り');
+
+INSERT INTO PC_TABLE VALUES('0501-00301-111', 'CreatePad SP2235-DSK', 1, '台', 200000, '003', 'CreatePadシリーズのデスクトップ最新版', 'img/pc/0501-00301-111.jpg', 'PC', '黒', 'LNB-DSK5433426-SP', '22型ワイド', 'WXGA', 'Intel Core i7', '8GB', '1TB', '光学ドライブ／スーパーマルチドライブ', 'IEEE 802.11', 'Windows 7 Professional 64bit', 'Office Professional 2010', '―', '―', '1年（引取り修理）', '3000g', '幅306×奥行206.5×厚さ19-26.6mm', 'OSのダウングレードも可');
+INSERT INTO PC_TABLE VALUES('0501-00301-121', 'CreatePad SP2236-NT', 1, '台', 85000, '003', 'CreatePadシリーズのノート最新版', 'img/pc/0501-00301-121.jpg', 'PC', '黒', 'LNB-NT3338463-SP', '12.1型', 'WXGA', 'Intel Core i5', '4GB', '250GB', '光学ドライブ／無し', 'IEEE 802.11', 'Windows 7 Professional 32bit', 'Office Personal 2010', '約5.2時間', '―', '1年（引取り修理）', '1630g（バッテリー装着時）', '幅306×奥行206.5×厚さ19-26.6mm', 'OSのダウングレードも可');
+INSERT INTO PC_TABLE VALUES('0501-00401-111', 'NetBook PC ISONAスタンダード', 1, '台', 100000, '004', '新ブランドISONAの第一弾', 'img/pc/0501-00401-111.jpg', 'PC', '赤', 'PC-ISS10CWNHDS', '10.1型', 'WXGA', 'Celron', '2GB', '200GB', '光学ドライブ／無し', 'IEEE 802.11', 'Windows 7 Home 32bit', 'なし', '約16.5時間', '―', '5年', '1340g（バッテリー装着時）', '幅…', 'Open Officeインストール済');
+
+INSERT INTO HANBAIZAIKO01_TABLE VALUES('0303-00701-111', '01', '02', 'X80', 201, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO01_TABLE VALUES('0301-00813-322', '01', '04', 'B97', 253, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO01_TABLE VALUES('0302-00816-100', '01', '04', 'A41', 459, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO01_TABLE VALUES('0303-00701-112', '01', '02', 'M29', 176, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO01_TABLE VALUES('0401-00574-222', '01', '04', 'J59', 1055, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO01_TABLE VALUES('0404-00517-890', '01', '04', 'C13', 390, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO01_TABLE VALUES('0401-00642-012', '01', '04', 'H90', 1333, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO01_TABLE VALUES('0402-00601-112', '01', '04', 'V72', 117, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO01_TABLE VALUES('0501-00301-111', '01', '03', 'J23', 594, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO01_TABLE VALUES('0501-00301-121', '01', '04', 'K79', 1253, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO01_TABLE VALUES('0501-00401-111', '01', '01', 'A55', 715, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+
+INSERT INTO HANBAIZAIKO02_TABLE VALUES('0303-00701-111', '02', '02', 'X80', 1405, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO02_TABLE VALUES('0301-00813-322', '02', '04', 'B97', 1399, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO02_TABLE VALUES('0302-00816-100', '02', '04', 'A41', 929, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO02_TABLE VALUES('0303-00701-112', '02', '02', 'M29', 711, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO02_TABLE VALUES('0401-00574-222', '02', '04', 'J59', 290, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO02_TABLE VALUES('0404-00517-890', '02', '04', 'C13', 308, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO02_TABLE VALUES('0401-00642-012', '02', '04', 'H90', 1456, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO02_TABLE VALUES('0402-00601-112', '02', '04', 'V72', 1053, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO02_TABLE VALUES('0501-00301-111', '02', '03', 'J23', 439, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO02_TABLE VALUES('0501-00301-121', '02', '04', 'K79', 476, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO02_TABLE VALUES('0501-00401-111', '02', '01', 'A55', 560, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+
+INSERT INTO HANBAIZAIKO03_TABLE VALUES('0303-00701-111', '03', '04', 'E35', 708, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO03_TABLE VALUES('0301-00813-322', '03', '04', 'P86', 692, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO03_TABLE VALUES('0302-00816-100', '03', '02', 'T75', 56, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO03_TABLE VALUES('0303-00701-112', '03', '04', 'R13', 531, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO03_TABLE VALUES('0401-00574-222', '03', '03', 'S17', 1081, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO03_TABLE VALUES('0404-00517-890', '03', '02', 'J70', 1026, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO03_TABLE VALUES('0401-00642-012', '03', '01', 'R95', 701, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO03_TABLE VALUES('0402-00601-112', '03', '04', 'V57', 107, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO03_TABLE VALUES('0501-00301-111', '03', '04', 'W85', 1042, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO03_TABLE VALUES('0501-00301-121', '03', '03', 'S59', 813, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+INSERT INTO HANBAIZAIKO03_TABLE VALUES('0501-00401-111', '03', '03', 'U78', 1377, 0, 0, 1000, 2000, '2011-12-20 00:00:00');
+-- ***** ここまで ver.2: 新カテゴリの初期データを追加 *****
+
+-- ***** ver.3：個人顧客の初期データ *****
+-- 下記の「要確認」は、提供サンプルデータの実値に置き換えること。
+
+-- ***** ver.3：個人顧客の認証情報 *****
+-- パスワードは実際のサンプル値または確定したテスト用値に置き換えること。
+-- INSERT INTO KOKYAKUPASS_TABLE VALUES('400000', '要確認');
+-- INSERT INTO KOKYAKUPASS_TABLE VALUES('400001', '要確認');
+-- INSERT INTO KOKYAKUPASS_TABLE VALUES('400002', '要確認');
+-- INSERT INTO KOKYAKUPASS_TABLE VALUES('400003', '要確認');
+-- ***** ver.3：個人顧客の認証情報ここまで *****
+
+INSERT INTO KOKYAKUKOJIN_TABLE
+(
+  KOKYAKUCD,
+  KOKYAKUNAME,
+  KOKYAKUKANA,
+  ZIP,
+  KENCD,
+  ADDRESS1,
+  ADDRESS2,
+  TEL,
+  FAX,
+  MAIL,
+  URIKAKE_ZAN,
+  YOSIN_GENDO,
+  EIGYOUSHOCD,
+  TOUROKU_D,
+  BIRTHDAY
+)
+VALUES
+(
+  '400000',
+  '山田太郎',
+  '要確認',
+  '要確認',
+  '28',
+  '要確認',
+  '要確認',
+  '要確認',
+  NULL,
+  NULL,
+  0,
+  1000000,
+  '01',
+  '2009-03-02',
+  '1980-04-02'
+);
+
+INSERT INTO KOKYAKUKOJIN_TABLE
+(
+  KOKYAKUCD,
+  KOKYAKUNAME,
+  KOKYAKUKANA,
+  ZIP,
+  KENCD,
+  ADDRESS1,
+  ADDRESS2,
+  TEL,
+  FAX,
+  MAIL,
+  URIKAKE_ZAN,
+  YOSIN_GENDO,
+  EIGYOUSHOCD,
+  TOUROKU_D,
+  BIRTHDAY
+)
+VALUES
+(
+  '400001',
+  '山田花子',
+  '要確認',
+  '要確認',
+  '13',
+  '要確認',
+  '要確認',
+  '要確認',
+  NULL,
+  NULL,
+  0,
+  1000000,
+  '02',
+  '2009-05-01',
+  '1985-02-03'
+);
+
+INSERT INTO KOKYAKUKOJIN_TABLE
+(
+  KOKYAKUCD,
+  KOKYAKUNAME,
+  KOKYAKUKANA,
+  ZIP,
+  KENCD,
+  ADDRESS1,
+  ADDRESS2,
+  TEL,
+  FAX,
+  MAIL,
+  URIKAKE_ZAN,
+  YOSIN_GENDO,
+  EIGYOUSHOCD,
+  TOUROKU_D,
+  BIRTHDAY
+)
+VALUES
+(
+  '400002',
+  '鈴木一郎',
+  '要確認',
+  '要確認',
+  '40',
+  '要確認',
+  '要確認',
+  '要確認',
+  NULL,
+  NULL,
+  0,
+  1000000,
+  '03',
+  '2010-11-01',
+  '1976-09-17'
+);
+
+INSERT INTO KOKYAKUKOJIN_TABLE
+(
+  KOKYAKUCD,
+  KOKYAKUNAME,
+  KOKYAKUKANA,
+  ZIP,
+  KENCD,
+  ADDRESS1,
+  ADDRESS2,
+  TEL,
+  FAX,
+  MAIL,
+  URIKAKE_ZAN,
+  YOSIN_GENDO,
+  EIGYOUSHOCD,
+  TOUROKU_D,
+  BIRTHDAY
+)
+VALUES
+(
+  '400003',
+  '花山治郎',
+  '要確認',
+  '要確認',
+  '40',
+  '要確認',
+  '要確認',
+  '要確認',
+  NULL,
+  NULL,
+  0,
+  1000000,
+  '03',
+  '2010-11-01',
+  '1967-11-11'
+);
+-- ***** ver.3：個人顧客の初期データここまで *****
+
+-- ***** ver.3：個人顧客コードの採番管理 *****
+INSERT INTO CTR_CURCODE_TABLE
+(
+  DATANAME,
+  CODENAME,
+  CURCODE
+)
+VALUES
+(
+  'KOKYAKUKOJIN_TABLE',
+  'KOKYAKUCD',
+  '400004'
+);
+-- ***** ver.3：個人顧客コードの採番管理ここまで *****
