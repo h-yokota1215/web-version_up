@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+        
+    <!-- ***** ここから ver.2: コンテキスト・ルートをjuchu02へ変更 -->
+        
+    <!-- 作業内容: ver.2用Webアプリをjuchu01と分離して配置する -->
+        
+    <wb-module deploy-name="juchu02">
+                
+        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+                        
+        
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+                
+        <property name="java-output-path" value="/juchu02/build/classes"/>
+        <property name="context-root" value="juchu03"/>
+            
+        <!-- ***** ここまで ver.2 -->
+            
+    </wb-module>
+        
+
+</project-modules>
